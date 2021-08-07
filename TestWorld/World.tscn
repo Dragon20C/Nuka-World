@@ -1,0 +1,32 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://Player/Player.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Textures/texture_02.png" type="Texture" id=2]
+
+[sub_resource type="CubeMesh" id=1]
+size = Vector3( 50, 0.2, 50 )
+
+[sub_resource type="SpatialMaterial" id=2]
+albedo_texture = ExtResource( 2 )
+uv1_triplanar = true
+
+[sub_resource type="ConcavePolygonShape" id=3]
+data = PoolVector3Array( -25, 0.1, 25, 25, 0.1, 25, -25, -0.1, 25, 25, 0.1, 25, 25, -0.1, 25, -25, -0.1, 25, 25, 0.1, -25, -25, 0.1, -25, 25, -0.1, -25, -25, 0.1, -25, -25, -0.1, -25, 25, -0.1, -25, 25, 0.1, 25, 25, 0.1, -25, 25, -0.1, 25, 25, 0.1, -25, 25, -0.1, -25, 25, -0.1, 25, -25, 0.1, -25, -25, 0.1, 25, -25, -0.1, -25, -25, 0.1, 25, -25, -0.1, 25, -25, -0.1, -25, 25, 0.1, 25, -25, 0.1, 25, 25, 0.1, -25, -25, 0.1, 25, -25, 0.1, -25, 25, 0.1, -25, -25, -0.1, 25, 25, -0.1, 25, -25, -0.1, -25, 25, -0.1, 25, 25, -0.1, -25, -25, -0.1, -25 )
+
+[node name="World" type="Spatial"]
+
+[node name="Environment" type="Spatial" parent="."]
+
+[node name="MeshInstance" type="MeshInstance" parent="Environment"]
+mesh = SubResource( 1 )
+material/0 = SubResource( 2 )
+
+[node name="StaticBody" type="StaticBody" parent="Environment/MeshInstance"]
+
+[node name="CollisionShape" type="CollisionShape" parent="Environment/MeshInstance/StaticBody"]
+shape = SubResource( 3 )
+
+[node name="DirectionalLight" type="DirectionalLight" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 0.634865, 0.772623, 0, -0.772623, 0.634865, 0, 14, 0 )
+
+[node name="Player" parent="." instance=ExtResource( 1 )]
