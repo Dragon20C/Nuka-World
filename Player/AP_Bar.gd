@@ -2,7 +2,7 @@ extends TextureProgress
 
 
 onready var tween = get_node("Tween")
-var current_ap = 0
+var current_ap = 100
 var max_ap = 100
 var active : bool = false
 
@@ -10,8 +10,6 @@ func _ready():
 	value = current_ap
 	max_value = max_ap
 
-func _physics_process(delta):
-	pass
 		
 func decrease_ap(_value):
 	active = true
