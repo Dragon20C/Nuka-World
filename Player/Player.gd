@@ -13,6 +13,8 @@ var movement:  Vector3 = Vector3()
 var gravity_vec : Vector3 = Vector3()
 var snap : Vector3 = Vector3()
 
+var is_sprinting : bool = false
+
 onready var camera_base = get_node("BaseCamera")
 
 func _ready():
@@ -20,7 +22,8 @@ func _ready():
 
 func _unhandled_input(event):
 	if event.is_action_pressed("ui_cancel"):
-		get_tree().quit()
+		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		#get_tree().quit()
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		rotate_y(deg2rad(-event.relative.x * mouse_sen))
 		camera_base.rotate_x(deg2rad(event.relative.y * mouse_sen))
@@ -32,7 +35,18 @@ func _physics_process(delta):
 	apply_movement(input,delta)
 	
 	movement = move_and_slide_with_snap(movement,snap,Vector3.UP)
-
+	
+	if is_sprinting and !Input.is_action_pressed("sprint") or is_sprinting and input == Vector3.ZERO:
+		yield(get_tree().create_timer(0.8), "timeout")
+		is_sprinting = false
+		#PlayerStats.action_system.refil_ap(delta)
+		speed = 10
+	elif !is_sprinting:
+		if PlayerStats.action_system.current_ap != PlayerStats.action_system.max_ap and !is_sprinting:
+			PlayerStats.action_system.refil_ap(delta)
+			
+	$DEBUG/Sprinting.text = str(is_sprinting)
+		
 func get_input():
 	var input_vector = Vector3.ZERO
 	var h_rot = global_transform.basis.get_euler().y
@@ -40,7 +54,15 @@ func get_input():
 	input_vector.x = Input.get_action_strength("right") - Input.get_action_strength("left")
 	return input_vector.rotated(Vector3.UP,h_rot).normalized() if input_vector.length() > 1 else input_vector.rotated(Vector3.UP,h_rot)
 
+
 func apply_movement(input,delta):
+	if Input.is_action_pressed("sprint") and is_on_floor() and PlayerStats.action_system.current_ap != 0 and input != Vector3.ZERO:
+		speed = 14
+		PlayerStats.action_system.decrease_ap(delta)
+		is_sprinting = true
+	else:
+		speed = 10
+		
 	velocity = velocity.linear_interpolate(-input * speed,accel * delta)
 	movement = velocity + gravity_vec
 

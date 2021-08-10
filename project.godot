@@ -14,6 +14,10 @@ config/name="nuclear WasteLand"
 run/main_scene="res://TestWorld/World.tscn"
 config/icon="res://icon.png"
 
+[autoload]
+
+PlayerStats="*res://Player/PlayerStats.gd"
+
 [display]
 
 window/size/width=1600
